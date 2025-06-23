@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>アプリケーション名</title>
+    <title>coachtech</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
     <link rel="stylesheet" href="{{ asset('css/common.css') }}">
     @yield('css')
@@ -15,8 +15,8 @@
     <header class="header">
         <div class="header__inner">
             <div class="header-utilities">
-                <a class="header__logo" href="/">
-                    アプリケーション名
+                <a class="header__logo">
+                    <img src="{{ asset('storage/logo.svg') }}" alt="coachtech">
                 </a>
                 <nav>
                     <ul class="header-nav">
@@ -39,6 +39,7 @@
 
     <main>
         @yield('content')
+        @yield('js')
     </main>
 </body>
 

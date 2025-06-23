@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,15 @@ use App\Http\Controllers\AuthController;
 |
 */
 
+// 認証関連のルート
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login.form');
+Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('register.form');
+Route::post('/register', [LoginController::class, 'register'])->name('register');
+
+// 認証が必要なルート
 Route::middleware('auth')->group(function () {
     Route::get('/', [AuthController::class, 'index']);
 });
