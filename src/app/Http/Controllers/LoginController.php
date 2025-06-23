@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Http\Requests\RegisterRequest;
 
 class LoginController extends Controller
 {
@@ -81,7 +82,7 @@ class LoginController extends Controller
     public function verify(EmailVerificationRequest $request)
     {
         $request->fulfill();
-        return redirect()->route('profile.edit')->with('success', 'メール認証が完了しました！');
+        return redirect()->route('user.attendance');
     }
 
     public function resendVerificationEmail(Request $request)

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 
+<link rel="stylesheet" href="{{ asset('css/auth/verify-email.css') }}">
+
 <head>
     <meta charset="utf-8">
     <title>メール認証</title>

@@ -11,24 +11,18 @@ class Attendance extends Model
 
     protected $fillable = [
         'user_id',
-        'date',
-        'clock_in',
-        'clock_out',
-        'break1_start',
-        'break1_end',
-        'break2_start',
-        'break2_end',
-        'notes',
+        'clock_in_time',
+        'clock_out_time',
+        'break_start_time',
+        'break_end_time',
+        'status',
     ];
 
     protected $casts = [
-        'date' => 'date',
-        'clock_in' => 'datetime',
-        'clock_out' => 'datetime',
-        'break1_start' => 'datetime',
-        'break1_end' => 'datetime',
-        'break2_start' => 'datetime',
-        'break2_end' => 'datetime',
+        'clock_in_time' => 'datetime',
+        'clock_out_time' => 'datetime',
+        'break_start_time' => 'datetime',
+        'break_end_time' => 'datetime',
     ];
 
     public function user()

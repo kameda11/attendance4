@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,7 +24,34 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('register.form');
 Route::post('/register', [LoginController::class, 'register'])->name('register');
 
-// 認証が必要なルート
+// メール認証関連のルート
 Route::middleware('auth')->group(function () {
-    Route::get('/', [AuthController::class, 'index']);
+    Route::get('/email/verify', [LoginController::class, 'showVerificationNotice'])->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', [LoginController::class, 'verify'])
+        ->middleware(['signed'])
+        ->name('verification.verify');
+    Route::post('/email/verification-notification', [LoginController::class, 'resendVerificationEmail'])
+        ->middleware(['throttle:6,1'])
+        ->name('verification.send');
+});
+
+// 認証・メール認証が必要なルート
+Route::middleware(['auth', 'verified'])->group(function () {
+    // メインページ（勤務管理）
+    Route::get('/', [UserController::class, 'attendance'])->name('user.dashboard');
+
+    // 勤務管理
+    Route::get('/attendance', [UserController::class, 'attendance'])->name('user.attendance');
+    Route::post('/attendance/clock-in', [UserController::class, 'clockIn'])->name('user.clock-in');
+    Route::post('/attendance/clock-out', [UserController::class, 'clockOut'])->name('user.clock-out');
+    Route::post('/attendance/break-start', [UserController::class, 'breakStart'])->name('user.break-start');
+    Route::post('/attendance/break-end', [UserController::class, 'breakEnd'])->name('user.break-end');
+
+    // 勤務履歴
+    Route::get('/attendance/history', [UserController::class, 'attendanceHistory'])->name('user.attendance-history');
+
+    // プロフィール管理
+    Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
+    Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
+    Route::put('/profile/password', [UserController::class, 'changePassword'])->name('user.password.change');
 });

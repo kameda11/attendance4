@@ -13,20 +13,20 @@ class CreateAttendancesTable extends Migration
      */
     public function up()
     {
+
+        // 新しいテーブルを作成
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->date('date');
-            $table->time('clock_in')->nullable();
-            $table->time('clock_out')->nullable();
-            $table->time('break1_start')->nullable();
-            $table->time('break1_end')->nullable();
-            $table->time('break2_start')->nullable();
-            $table->time('break2_end')->nullable();
-            $table->text('notes')->nullable();
+            $table->datetime('clock_in_time')->nullable();
+            $table->datetime('clock_out_time')->nullable();
+            $table->datetime('break_start_time')->nullable();
+            $table->datetime('break_end_time')->nullable();
+            $table->enum('status', ['working', 'break', 'completed'])->default('working');
             $table->timestamps();
 
-            $table->unique(['user_id', 'date']);
+            // 同じ日に複数の出勤記録を作成できないように制約
+            $table->unique(['user_id', 'created_at'], 'user_date_unique');
         });
     }
 
