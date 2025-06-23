@@ -1,107 +1,61 @@
-# アプリケーション名(ログイン機能あり)
+# 勤怠管理アプリ
+## 環境構築
+**Dockerビルド**
+1. `git clone git@github.com:kameda11/free-market3.git`
+2. DockerDesktopアプリを立ち上げる
+3. `docker-compose up -d --build`
 
-# こっちはブランチ A
 
--   このリポジトリは amd 版です(Windows/IntelCPU の Mac 向け)
+**Laravel環境構築**
+1. `docker-compose exec php bash`
 
-## 準備手順(この手順はアプリ完成時には README から削除する)
+2. `composer install`
 
--   Docker Desktop で全コンテナを停止させる
+3. 「.env.example」ファイルを 「.env」ファイルに命名を変更。または、新しく.envファイルを作成
 
--   リモートリポジトリの作成  
-    GitHub でリモートリポジトリを作成  
-    自由にリポジトリ名を入力したら他の設定は変更せずに作成ボタンを押す  
-    作成したら下記を控える  
-    新しいリポジトリの SSH => 上で作成した SSH アドレス  
-    新しいリポジトリの名前 => 上で自由に入力したリポジトリ名
-
--   コマンドライン(Ubuntu or Terminal)を開く
-
--   カレントディレクトリ(現在のディレクトリ)を coachtech に移動する
-
--   以下のコマンドを実行する
-
-```
-git clone git@github.com:tamachima327/laravel-template.git
-```
-
-```
-yes | rm -r laravel-template/.git
+4. .envのメール設定を変更する
+- Mailtrapの認証情報を設定してください</br>
+- https://mailtrap.io でアカウントを作成し、認証情報を取得できます</br>
+``` text
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_mailtrap_username
+MAIL_PASSWORD=your_mailtrap_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="your-email@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-```
-git clone 新しいリポジトリのSSH
-```
-
-```
-mv laravel-template/* laravel-template/.[^\.]* 新しいリポジトリの名前
-```
-
-```
-rm -r laravel-template
-```
-
-```
-cd 新しいリポジトリの名前
-```
-
-```
-code .
-```
-
-## 環境構築手順
-
--   コンテナを立ち上げるため、以下を実行
-
-```
-docker compose up -d --build
-```
-
--   env ファイルの作成をするため、以下を実行
-
-```
-cp src/.env.example src/.env
-```
-
--   php にコンテナに入るため、以下を実行
-
-```
-docker compose exec php bash
-```
-
--   composer パッケージをインストールするため、以下を実行
-
-```
-composer install
-```
-
--   アプリケーションキーを作成するため、以下を実行
-
-```
+5. アプリケーションキーの作成
+``` bash
 php artisan key:generate
 ```
 
--   マイグレーションを実行するため、以下を実行
-
-```
+6. マイグレーションの実行
+``` bash
 php artisan migrate
 ```
 
-## 環境構築手順が終わった後にやること(この手順はアプリ完成時には README から削除する)
+7. シーディングの実行
+``` bash
+php artisan db:seed
+```
 
--   ブラウザで動作チェック  
-    localhost にアクセスして動作確認  
-    localhost:8080 にアクセスして phpmyadmin が見れるか確認
+8. シンボリックリンクの実行
+``` bash
+php artisan storage:link
+```
 
--   環境構築手順で動くことを確認したら commit/push して環境構築完了  
-    コミットメッセージは"First commit"
+## 使用技術(実行環境)
+・PHP 7.4.9  </br>
+・Laravel 8.83.29 </br>
+・MySQL 15.1 </br>
 
-## 開発でやる必要があること(この手順はアプリ完成時には README から削除する)
+## ER図
+![alt](./attendance.drawio.png)
 
--   view ファイルの作成・修正・削除
--   controller の作成・修正
--   model の作成・修正
--   css の作成・修正・削除(クラス名も直すこと)
--   migration ファイルの作成・修正
--   seeder の作成
--   README.md(このファイル)の修正
+## URL
+- 開発環境：http://localhost/
+- phpMyAdmin:：http://localhost:8080/
+
