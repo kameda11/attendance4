@@ -3,7 +3,6 @@
 
 @section('content')
 <div class="attendance-container">
-    <!-- 勤務状態表示 -->
     <div class="attendance-status">
         <div class="status-indicator">
             <span class="status-value" id="workStatus">
@@ -103,7 +102,7 @@
     function clockIn() {
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         if (!csrfToken) {
-            alert('CSRFトークンが見つかりません。ページを再読み込みしてください。');
+            console.error('CSRFトークンが見つかりません。');
             return;
         }
 
@@ -127,7 +126,6 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('エラーが発生しました。ページを再読み込みしてください。');
             });
     }
 
@@ -135,7 +133,7 @@
     function clockOut() {
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         if (!csrfToken) {
-            alert('CSRFトークンが見つかりません。ページを再読み込みしてください。');
+            console.error('CSRFトークンが見つかりません。');
             return;
         }
 
@@ -159,7 +157,6 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('エラーが発生しました。ページを再読み込みしてください。');
             });
     }
 
@@ -167,7 +164,7 @@
     function breakStart() {
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         if (!csrfToken) {
-            alert('CSRFトークンが見つかりません。ページを再読み込みしてください。');
+            console.error('CSRFトークンが見つかりません。');
             return;
         }
 
@@ -191,7 +188,6 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('エラーが発生しました。ページを再読み込みしてください。');
             });
     }
 
@@ -199,7 +195,7 @@
     function breakEnd() {
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         if (!csrfToken) {
-            alert('CSRFトークンが見つかりません。ページを再読み込みしてください。');
+            console.error('CSRFトークンが見つかりません。');
             return;
         }
 
@@ -223,7 +219,6 @@
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('エラーが発生しました。ページを再読み込みしてください。');
             });
     }
 

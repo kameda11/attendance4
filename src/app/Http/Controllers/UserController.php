@@ -177,51 +177,208 @@ class UserController extends Controller
     }
 
     /**
-     * プロフィール表示
+     * 勤怠一覧を表示
      */
-    public function profile()
+    public function attendanceList(Request $request)
     {
         $user = Auth::user();
-        return view('user.profile', compact('user'));
+
+        // 年月の取得（デフォルトは現在の年月）
+        $year = $request->get('year', now()->year);
+        $month = $request->get('month', now()->month);
+
+        $currentMonth = \Carbon\Carbon::create($year, $month, 1);
+        $prevMonth = $currentMonth->copy()->subMonth();
+        $nextMonth = $currentMonth->copy()->addMonth();
+
+        // 月の開始日と終了日
+        $startOfMonth = $currentMonth->copy()->startOfMonth();
+        $endOfMonth = $currentMonth->copy()->endOfMonth();
+
+        // その月の勤怠データを取得
+        $attendances = $user->attendances()
+            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
+            ->get()
+            ->keyBy(function ($attendance) {
+                return $attendance->created_at->format('Y-m-d');
+            });
+
+        // カレンダー配列を作成
+        $calendar = [];
+        $currentDate = $startOfMonth->copy();
+
+        while ($currentDate <= $endOfMonth) {
+            $dateKey = $currentDate->format('Y-m-d');
+            $attendance = $attendances->get($dateKey);
+
+            // 勤務時間と休憩時間の計算
+            $workTime = '';
+            $breakTime = '';
+
+            if ($attendance) {
+                if ($attendance->clock_in_time && $attendance->clock_out_time) {
+                    $workTime = $this->calculateWorkTime($attendance->clock_in_time, $attendance->clock_out_time, $attendance->break_start_time, $attendance->break_end_time);
+                }
+
+                if ($attendance->break_start_time && $attendance->break_end_time) {
+                    $breakTime = $this->calculateBreakTime($attendance->break_start_time, $attendance->break_end_time);
+                }
+            }
+
+            $calendar[] = [
+                'day' => $currentDate->format('j'),
+                'weekday' => $this->getJapaneseWeekday($currentDate->dayOfWeek),
+                'date' => $currentDate->format('Y-m-d'),
+                'attendance' => $attendance,
+                'workTime' => $workTime,
+                'breakTime' => $breakTime,
+                'isToday' => $currentDate->isToday(),
+                'isWeekend' => $currentDate->isWeekend(),
+            ];
+
+            $currentDate->addDay();
+        }
+
+        // サマリー計算
+        $summary = $this->calculateSummary($attendances);
+
+        return view('attendance.list', compact('calendar', 'currentMonth', 'prevMonth', 'nextMonth', 'summary'));
     }
 
     /**
-     * プロフィール更新
+     * 勤務時間を計算
      */
-    public function updateProfile(Request $request)
+    private function calculateWorkTime($clockIn, $clockOut, $breakStart = null, $breakEnd = null)
     {
-        $user = Auth::user();
+        $totalMinutes = $clockIn->diffInMinutes($clockOut);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
-        ]);
+        // 休憩時間を差し引く
+        if ($breakStart && $breakEnd) {
+            $breakMinutes = $breakStart->diffInMinutes($breakEnd);
+            $totalMinutes -= $breakMinutes;
+        }
 
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-        ]);
+        $hours = floor($totalMinutes / 60);
+        $minutes = $totalMinutes % 60;
 
-        return redirect()->route('user.profile')
-            ->with('success', 'プロフィールを更新しました。');
+        return sprintf('%d:%02d', $hours, $minutes);
     }
 
     /**
-     * パスワード変更
+     * 休憩時間を計算
      */
-    public function changePassword(Request $request)
+    private function calculateBreakTime($breakStart, $breakEnd)
     {
-        $request->validate([
-            'current_password' => 'required|current_password',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        $totalMinutes = $breakStart->diffInMinutes($breakEnd);
+        $hours = floor($totalMinutes / 60);
+        $minutes = $totalMinutes % 60;
 
+        return sprintf('%d:%02d', $hours, $minutes);
+    }
+
+    /**
+     * 日本語の曜日を取得
+     */
+    private function getJapaneseWeekday($dayOfWeek)
+    {
+        $weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+        return $weekdays[$dayOfWeek];
+    }
+
+    /**
+     * 月間サマリーを計算
+     */
+    private function calculateSummary($attendances)
+    {
+        $workDays = 0;
+        $totalWorkMinutes = 0;
+        $totalBreakMinutes = 0;
+
+        foreach ($attendances as $attendance) {
+            if ($attendance->clock_in_time && $attendance->clock_out_time) {
+                $workDays++;
+
+                $workMinutes = $attendance->clock_in_time->diffInMinutes($attendance->clock_out_time);
+
+                // 休憩時間を差し引く
+                if ($attendance->break_start_time && $attendance->break_end_time) {
+                    $breakMinutes = $attendance->break_start_time->diffInMinutes($attendance->break_end_time);
+                    $workMinutes -= $breakMinutes;
+                    $totalBreakMinutes += $breakMinutes;
+                }
+
+                $totalWorkMinutes += $workMinutes;
+            }
+        }
+
+        return [
+            'workDays' => $workDays,
+            'totalWorkHours' => round($totalWorkMinutes / 60, 1),
+            'totalBreakHours' => round($totalBreakMinutes / 60, 1),
+        ];
+    }
+
+    public function attendanceDetail($id)
+    {
         $user = Auth::user();
-        $user->update([
-            'password' => bcrypt($request->password),
+
+        if ($id == 0) {
+            // 勤怠記録がない場合
+            $attendance = null;
+            $date = request()->get('date', now()->format('Y-m-d'));
+        } else {
+            $attendance = $user->attendances()->findOrFail($id);
+            $date = $attendance->created_at->format('Y-m-d');
+        }
+
+        return view('attendance.detail', compact('attendance', 'date'));
+    }
+
+    /**
+     * 勤怠詳細を更新
+     */
+    public function attendanceUpdate(Request $request, $id)
+    {
+        $user = Auth::user();
+        $attendance = $user->attendances()->findOrFail($id);
+
+        $request->validate([
+            'clock_in_time' => 'nullable|date_format:H:i',
+            'clock_out_time' => 'nullable|date_format:H:i',
+            'break_start_time' => 'nullable|date_format:H:i',
+            'break_end_time' => 'nullable|date_format:H:i',
+            'break2_start_time' => 'nullable|date_format:H:i',
+            'break2_end_time' => 'nullable|date_format:H:i',
+            'status' => 'required|in:working,break,completed,not_working',
         ]);
 
-        return redirect()->route('user.profile')
-            ->with('success', 'パスワードを変更しました。');
+        $updateData = [
+            'status' => $request->status,
+        ];
+
+        // 時間データの処理
+        if ($request->clock_in_time) {
+            $updateData['clock_in_time'] = $attendance->created_at->format('Y-m-d') . ' ' . $request->clock_in_time;
+        }
+        if ($request->clock_out_time) {
+            $updateData['clock_out_time'] = $attendance->created_at->format('Y-m-d') . ' ' . $request->clock_out_time;
+        }
+        if ($request->break_start_time) {
+            $updateData['break_start_time'] = $attendance->created_at->format('Y-m-d') . ' ' . $request->break_start_time;
+        }
+        if ($request->break_end_time) {
+            $updateData['break_end_time'] = $attendance->created_at->format('Y-m-d') . ' ' . $request->break_end_time;
+        }
+        if ($request->break2_start_time) {
+            $updateData['break2_start_time'] = $attendance->created_at->format('Y-m-d') . ' ' . $request->break2_start_time;
+        }
+        if ($request->break2_end_time) {
+            $updateData['break2_end_time'] = $attendance->created_at->format('Y-m-d') . ' ' . $request->break2_end_time;
+        }
+
+        $attendance->update($updateData);
+
+        return redirect()->route('user.attendance.list', ['id' => $id])
+            ->with('success', '勤怠情報を更新しました。');
     }
 }

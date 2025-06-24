@@ -49,9 +49,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // 勤務履歴
     Route::get('/attendance/history', [UserController::class, 'attendanceHistory'])->name('user.attendance-history');
-
-    // プロフィール管理
-    Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
-    Route::put('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
-    Route::put('/profile/password', [UserController::class, 'changePassword'])->name('user.password.change');
+    Route::get('/attendance/list', [UserController::class, 'attendanceList'])->name('user.attendance.list');
+    Route::get('/attendance/detail/{id}', [UserController::class, 'attendanceDetail'])->name('user.attendance.detail');
+    Route::put('/attendance/update/{id}', [UserController::class, 'attendanceUpdate'])->name('user.attendance.update');
 });
