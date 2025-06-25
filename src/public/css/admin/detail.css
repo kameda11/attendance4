@@ -1,1 +1,153 @@
 /* admin-detail.css */
+
+.attendance-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Inter', sans-serif;
+    background-color: #F0EFF2;
+    min-height: 100vh;
+}
+
+.attendance-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px;
+}
+
+.attendance-detail-header h1 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5em;
+    border-left: 6px solid #000000;
+    padding-left: 10px;
+    margin-bottom: 10px;
+}
+
+.back-button {
+    background: #667eea;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+    background: #5a6fd8;
+}
+
+.btn {
+    padding: 10px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-secondary {
+    background: #FFFFFF;
+    color: #000000;
+    border: 2px solid #000000;
+}
+
+.attendance-detail-table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    padding: 20px;
+    text-align: left;
+    font-weight: bold;
+    color: #333;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    width: 30%;
+}
+
+td {
+    padding: 20px;
+    border-bottom: 1px solid #dee2e6;
+    color: #333;
+}
+
+tr:last-child th,
+tr:last-child td {
+    border-bottom: none;
+}
+
+.time-inputs {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.time-input {
+    display: flex;
+    align-items: center;
+}
+
+.time-input input[type="text"] {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 80px;
+    text-align: center;
+    font-family: monospace;
+}
+
+.time-inputs label {
+    font-weight: bold;
+    color: #333;
+    font-size: 16px;
+    margin: 0 5px;
+}
+
+.status-select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    min-width: 120px;
+}
+
+.notes-textbox {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 200px;
+}
+
+.attendance-detail-actions {
+    display: flex;
+    justify-content: right;
+    margin-top: 30px;
+    padding: 20px;
+}
+
+.btn-primary {
+    background: #000000;
+    color: #FFFFFF;
+    padding: 12px 30px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+}

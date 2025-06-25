@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,19 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/register', [LoginController::class, 'showRegisterForm'])->name('register.form');
 Route::post('/register', [LoginController::class, 'register'])->name('register');
+
+// 管理者認証関連のルート
+Route::get('/admin/login', [AdminController::class, 'showLoginForm'])->name('admin.login.form');
+Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login');
+Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+
+// 管理者認証が必要なルート
+Route::middleware(['admin.auth'])->group(function () {
+    Route::get('/admin/attendances', [AdminController::class, 'attendances'])->name('admin.attendances');
+    Route::get('/admin/attendance/detail/{id}', [AdminController::class, 'attendanceDetail'])->name('admin.attendance.detail');
+    Route::put('/admin/attendance/update/{id}', [AdminController::class, 'attendanceUpdate'])->name('admin.attendance.update');
+    Route::post('/admin/attendance/store', [AdminController::class, 'attendanceStore'])->name('admin.attendance.store');
+});
 
 // メール認証関連のルート
 Route::middleware('auth')->group(function () {

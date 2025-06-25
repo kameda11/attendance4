@@ -66,6 +66,13 @@
     white-space: nowrap;
 }
 
+.header-nav__text {
+    color: #fff;
+    font-size: 14px;
+    opacity: 0.8;
+    white-space: nowrap;
+}
+
 .list-links {
     display: flex;
     align-items: center;

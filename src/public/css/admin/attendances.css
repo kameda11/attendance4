@@ -1,1 +1,202 @@
 /* admin-attendances.css */
+
+.admin-attendances-container {
+    min-height: 100vh;
+    background-color: #f5f7fa;
+}
+
+.page-header {
+    color: white;
+    padding: 20px 0;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.back-button {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.date-navigation {
+    background: white;
+    border-bottom: 1px solid #e1e5e9;
+    padding: 20px 0;
+}
+
+.nav-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-button {
+    text-decoration: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-button.prev {
+    flex-direction: row;
+}
+
+.nav-button.next {
+    flex-direction: row-reverse;
+}
+
+.arrow-icon {
+    width: 16px;
+    height: 16px;
+    filter: brightness(0) invert(1);
+    color: #333;
+}
+
+.nav-button.prev .arrow-icon {
+    transform: rotate(180deg);
+}
+
+.current-date h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+.attendances-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+.attendances-table {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.attendances-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.attendances-table th {
+    background: #f8f9fa;
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #e1e5e9;
+    font-size: 14px;
+}
+
+.attendances-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #e1e5e9;
+    font-size: 14px;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.user-info .name {
+    font-weight: 600;
+    color: #333;
+}
+
+.user-info .email {
+    font-size: 12px;
+    color: #666;
+}
+
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    display: inline-block;
+    min-width: 80px;
+}
+
+.status-working {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.status-break {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+.status-completed {
+    background: #e8f5e8;
+    color: #388e3c;
+}
+
+.action-button {
+    background: #667eea;
+    color: white;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.action-button:hover {
+    background: #5a6fd8;
+    transform: translateY(-1px);
+}
+
+.action-button.detail {
+    background: #667eea;
+    color: white;
+}
+
+.no-data {
+    color: #999;
+    font-style: italic;
+    text-align: center;
+}
+
+.no-action {
+    color: #999;
+}
+
+.no-users {
+    text-align: center;
+    color: #999;
+    font-style: italic;
+    padding: 40px;
+}
+
+.no-attendance {
+    background-color: #fafafa;
+}
