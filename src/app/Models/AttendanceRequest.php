@@ -21,7 +21,6 @@ class AttendanceRequest extends Model
         'break_end_time',
         'break2_start_time',
         'break2_end_time',
-        'status_note',
         'notes',
         'approved_at',
         'rejection_reason',

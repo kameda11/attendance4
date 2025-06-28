@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>coachtech</title>
+    <title>coachtech - ユーザー</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
     <link rel="stylesheet" href="{{ asset('css/common.css') }}">
     @yield('css')
@@ -21,7 +21,6 @@
                 </a>
                 <nav>
                     <ul class="header-nav">
-                        @if (Auth::check())
                         <li class="header-nav__item">
                             <a class="header-nav__link" href="/attendance">勤怠</a>
                         </li>
@@ -37,23 +36,6 @@
                                 <button class="header-nav__button">ログアウト</button>
                             </form>
                         </li>
-                        @elseif (session('admin_logged_in'))
-                        <li class="header-nav__item">
-                            <a class="header-nav__link" href="/admin/attendances">勤怠一覧</a>
-                        </li>
-                        <li class="header-nav__item">
-                            <a class="header-nav__link" href="/admin/requests">申請一覧</a>
-                        </li>
-                        <li class="header-nav__item">
-                            <a class="header-nav__link" href="/admin/users">ユーザー管理</a>
-                        </li>
-                        <li class="header-nav__item">
-                            <form class="form" action="/admin/logout" method="post">
-                                @csrf
-                                <button class="header-nav__button">ログアウト</button>
-                            </form>
-                        </li>
-                        @endif
                     </ul>
                 </nav>
             </div>

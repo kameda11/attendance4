@@ -27,7 +27,6 @@ class CreateAttendanceRequestsTable extends Migration
             $table->time('break_end_time')->nullable();
             $table->time('break2_start_time')->nullable();
             $table->time('break2_end_time')->nullable();
-            $table->string('status_note')->nullable();
             $table->text('notes')->nullable();
             $table->timestamp('approved_at')->nullable();
 

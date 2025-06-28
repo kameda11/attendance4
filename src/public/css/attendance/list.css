@@ -31,7 +31,6 @@
     border-radius: 10px;
 }
 
-
 .current-month {
     font-weight: bold;
     color: #333;
@@ -56,9 +55,14 @@
     width: 20px;
     height: 20px;
     object-fit: contain;
+    color: #737373;
 }
 
 .arrow-left {
+        transform: rotate(0deg);
+    }
+
+.arrow-right {
     transform: rotate(180deg);
 }
 

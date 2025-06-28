@@ -364,16 +364,12 @@ class AdminController extends Controller
             if ($attendanceRequest->break2_end_time) {
                 $updateData['break2_end_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->break2_end_time;
             }
-            if ($attendanceRequest->status_note) {
-                $updateData['status'] = $attendanceRequest->status_note;
-            }
 
             $attendance->update($updateData);
         } else {
             // 新規作成申請の場合
             $createData = [
                 'user_id' => $attendanceRequest->user_id,
-                'status' => $attendanceRequest->status_note,
             ];
 
             if ($attendanceRequest->clock_in_time) {

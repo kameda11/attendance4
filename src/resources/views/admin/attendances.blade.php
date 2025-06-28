@@ -11,7 +11,7 @@
     <div class="date-navigation">
         <div class="nav-content">
             <a href="{{ route('admin.attendances', ['date' => $prevDate->format('Y-m-d')]) }}" class="nav-button prev">
-                <img src="{{ asset('arrow.png') }}" alt="前月" class="arrow-left">
+                <img src="{{ asset('storage/arrow.png') }}" alt="前日" class="arrow-left">
                 前日
             </a>
 
@@ -20,7 +20,7 @@
             </div>
             <a href="{{ route('admin.attendances', ['date' => $nextDate->format('Y-m-d')]) }}" class="nav-button next">
                 翌日
-                <img src="{{ asset('arrow.png') }}" alt="翌月" class="arrow-right">
+                <img src="{{ asset('storage/arrow.png') }}" alt="翌日" class="arrow-right">
             </a>
         </div>
     </div>

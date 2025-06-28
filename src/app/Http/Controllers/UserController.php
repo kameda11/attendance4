@@ -361,7 +361,6 @@ class UserController extends Controller
             'target_date' => $attendance->created_at->format('Y-m-d'),
             'request_type' => AttendanceRequest::TYPE_UPDATE,
             'status' => AttendanceRequest::STATUS_PENDING,
-            'status_note' => $request->status,
             'notes' => $request->notes,
         ];
 
@@ -422,7 +421,6 @@ class UserController extends Controller
             'target_date' => $request->date,
             'request_type' => AttendanceRequest::TYPE_CREATE,
             'status' => AttendanceRequest::STATUS_PENDING,
-            'status_note' => $request->status,
             'notes' => $request->notes,
         ];
 

@@ -7,7 +7,7 @@
         <h1>勤怠一覧</h1>
         <div class="month-navigation">
             <a href="{{ route('user.attendance.list', ['year' => $prevMonth->year, 'month' => $prevMonth->month]) }}" class="btn btn-secondary">
-                <img src="{{ asset('arrow.png') }}" alt="前月" class="arrow-left">前月
+                <img src="{{ asset('storage/arrow.png') }}" alt="前月" class="arrow-left">前月
             </a>
             <div class="month-selector">
                 <select id="monthSelect" onchange="changeMonth()">
@@ -25,7 +25,7 @@
                 <span class="current-month">{{ $currentMonth->format('Y/m') }}</span>
             </div>
             <a href="{{ route('user.attendance.list', ['year' => $nextMonth->year, 'month' => $nextMonth->month]) }}" class="btn btn-secondary">翌月
-                <img src="{{ asset('arrow.png') }}" alt="翌月" class="arrow-right">
+                <img src="{{ asset('storage/arrow.png') }}" alt="翌月" class="arrow-right">
             </a>
         </div>
     </div>

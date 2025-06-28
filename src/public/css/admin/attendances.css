@@ -39,6 +39,22 @@
     background: #5a6fd8;
 }
 
+/* 矢印スタイル */
+.arrow-left,
+.arrow-right {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.arrow-left {
+    transform: rotate(0deg);
+}
+
+.arrow-right {
+    transform: rotate(0deg);
+}
+
 .attendances-main {
     background: white;
     border-radius: 10px;

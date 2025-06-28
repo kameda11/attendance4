@@ -1,0 +1,78 @@
+/* 管理者用スタイル */
+.admin-body {
+    background-color: #f8f9fa;
+}
+
+.admin-header {
+    background-color: #343a40;
+    border-bottom: 3px solid #007bff;
+}
+
+.admin-header .header-nav__link {
+    color: #ffffff;
+}
+
+.admin-header .header-nav__link:hover {
+    color: #007bff;
+}
+
+.admin-badge {
+    background-color: #dc3545;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.admin-main {
+    padding: 20px;
+    min-height: calc(100vh - 80px);
+}
+
+/* 管理者用テーブルスタイル */
+.admin-table {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.admin-table th {
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    font-weight: bold;
+}
+
+.admin-table td {
+    padding: 12px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* 管理者用ボタンスタイル */
+.admin-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.admin-btn-danger {
+    background-color: #dc3545;
+}
+
+.admin-btn-danger:hover {
+    background-color: #c82333;
+}
+
+.admin-btn-success {
+    background-color: #28a745;
+}
+
+.admin-btn-success:hover {
+    background-color: #218838;
+}
