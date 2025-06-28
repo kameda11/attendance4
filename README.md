@@ -1,7 +1,7 @@
 # 勤怠管理アプリ
 ## 環境構築
 **Dockerビルド**
-1. `git clone git@github.com:kameda11/free-market3.git`
+1. `git clone git@github.com:kameda11/attendance4.git`
 2. DockerDesktopアプリを立ち上げる
 3. `docker-compose up -d --build`
 
@@ -59,3 +59,6 @@ php artisan storage:link
 - 開発環境：http://localhost/
 - phpMyAdmin:：http://localhost:8080/
 
+##　管理者ログイン
+- メールアドレス：admin@email
+- パスワード：admin123
