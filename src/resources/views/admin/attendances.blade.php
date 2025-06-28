@@ -11,16 +11,16 @@
     <div class="date-navigation">
         <div class="nav-content">
             <a href="{{ route('admin.attendances', ['date' => $prevDate->format('Y-m-d')]) }}" class="nav-button prev">
-                <img src="{{ asset('storage/app/public/arrow.png') }}" alt="前日" class="arrow-icon">
+                <img src="{{ asset('arrow.png') }}" alt="前月" class="arrow-left">
                 前日
             </a>
 
             <div class="current-date">
                 <h2>{{ $selectedDate->format('Y年m月d日') }} ({{ $selectedDate->isoFormat('ddd') }})</h2>
             </div>
-
-            <a href="{{ route('admin.attendances', ['date' => $nextDate->format('Y-m-d')]) }}" class="nav-button next"> <img src="{{ asset('storage/app/public/arrow.png') }}" alt="翌日" class="arrow-icon">
+            <a href="{{ route('admin.attendances', ['date' => $nextDate->format('Y-m-d')]) }}" class="nav-button next">
                 翌日
+                <img src="{{ asset('arrow.png') }}" alt="翌月" class="arrow-right">
             </a>
         </div>
     </div>

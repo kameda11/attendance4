@@ -42,9 +42,6 @@
                             <a class="header-nav__link" href="/admin/attendances">勤怠一覧</a>
                         </li>
                         <li class="header-nav__item">
-                            <span class="header-nav__text">管理者: {{ session('admin_email') }}</span>
-                        </li>
-                        <li class="header-nav__item">
                             <form class="form" action="/admin/logout" method="post">
                                 @csrf
                                 <button class="header-nav__button">ログアウト</button>

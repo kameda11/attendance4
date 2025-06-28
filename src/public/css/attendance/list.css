@@ -94,3 +94,68 @@ td a {
     color: #000000;
     text-decoration: none;
 }
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    min-width: 60px;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-approved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.rejection-reason {
+    background-color: #f8f9fa;
+    padding: 10px;
+    font-size: 0.9em;
+    color: #721c24;
+}
+
+.no-data {
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+    padding: 20px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination .pagination-links {
+    display: flex;
+    gap: 10px;
+}
+
+.pagination .pagination-links a,
+.pagination .pagination-links span {
+    padding: 8px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    text-decoration: none;
+    color: #007bff;
+}
+
+.pagination .pagination-links span.current {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}

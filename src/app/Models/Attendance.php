@@ -15,7 +15,10 @@ class Attendance extends Model
         'clock_out_time',
         'break_start_time',
         'break_end_time',
+        'break2_start_time',
+        'break2_end_time',
         'status',
+        'notes',
     ];
 
     protected $casts = [
@@ -23,10 +26,17 @@ class Attendance extends Model
         'clock_out_time' => 'datetime',
         'break_start_time' => 'datetime',
         'break_end_time' => 'datetime',
+        'break2_start_time' => 'datetime',
+        'break2_end_time' => 'datetime',
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function attendanceRequests()
+    {
+        return $this->hasMany(AttendanceRequest::class);
     }
 }

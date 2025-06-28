@@ -5,7 +5,6 @@
 <div class="attendance-detail-container">
     <div class="attendance-detail-header">
         <h1>勤怠詳細</h1>
-        <a href="{{ route('admin.attendances') }}" class="back-button">勤怠一覧に戻る</a>
     </div>
 
     <form action="{{ $attendance ? route('admin.attendance.update', ['id' => $attendance->id]) : route('admin.attendance.store') }}" method="POST">

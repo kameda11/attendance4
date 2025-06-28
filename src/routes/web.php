@@ -36,6 +36,12 @@ Route::middleware(['admin.auth'])->group(function () {
     Route::get('/admin/attendance/detail/{id}', [AdminController::class, 'attendanceDetail'])->name('admin.attendance.detail');
     Route::put('/admin/attendance/update/{id}', [AdminController::class, 'attendanceUpdate'])->name('admin.attendance.update');
     Route::post('/admin/attendance/store', [AdminController::class, 'attendanceStore'])->name('admin.attendance.store');
+
+    // 申請関連
+    Route::get('/admin/attendance/requests', [AdminController::class, 'attendanceRequests'])->name('admin.attendance.requests');
+    Route::get('/admin/attendance/request/detail/{id}', [AdminController::class, 'attendanceRequestDetail'])->name('admin.attendance.request.detail');
+    Route::post('/admin/attendance/request/approve/{id}', [AdminController::class, 'approveRequest'])->name('admin.attendance.request.approve');
+    Route::post('/admin/attendance/request/reject/{id}', [AdminController::class, 'rejectRequest'])->name('admin.attendance.request.reject');
 });
 
 // メール認証関連のルート
@@ -66,4 +72,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/attendance/list', [UserController::class, 'attendanceList'])->name('user.attendance.list');
     Route::get('/attendance/detail/{id}', [UserController::class, 'attendanceDetail'])->name('user.attendance.detail');
     Route::put('/attendance/update/{id}', [UserController::class, 'attendanceUpdate'])->name('user.attendance.update');
+    Route::post('/attendance/store', [UserController::class, 'attendanceStore'])->name('user.attendance.store');
+
+    // 申請関連
+    Route::get('/attendance/requests', [UserController::class, 'attendanceRequests'])->name('user.attendance.requests');
 });

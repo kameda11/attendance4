@@ -22,6 +22,8 @@ class CreateAttendancesTable extends Migration
             $table->datetime('clock_out_time')->nullable();
             $table->datetime('break_start_time')->nullable();
             $table->datetime('break_end_time')->nullable();
+            $table->datetime('break2_start_time')->nullable();
+            $table->datetime('break2_end_time')->nullable();
             $table->enum('status', ['working', 'break', 'completed'])->default('working');
             $table->timestamps();
 

@@ -42,8 +42,23 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * Get the attendances for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function attendances()
     {
         return $this->hasMany(Attendance::class);
+    }
+
+    /**
+     * Get the attendance requests for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function attendanceRequests()
+    {
+        return $this->hasMany(AttendanceRequest::class);
     }
 }

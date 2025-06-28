@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Attendance;
+use App\Models\AttendanceRequest;
+use App\Http\Requests\AttendanceRequest as AttendanceUpdateRequest;
+use App\Http\Requests\AttendanceStoreRequest;
 
 class UserController extends Controller
 {
@@ -335,50 +338,129 @@ class UserController extends Controller
     }
 
     /**
-     * 勤怠詳細を更新
+     * 勤怠修正申請を作成
      */
-    public function attendanceUpdate(Request $request, $id)
+    public function attendanceUpdate(AttendanceUpdateRequest $request, $id)
     {
         $user = Auth::user();
         $attendance = $user->attendances()->findOrFail($id);
 
-        $request->validate([
-            'clock_in_time' => 'nullable|date_format:H:i',
-            'clock_out_time' => 'nullable|date_format:H:i',
-            'break_start_time' => 'nullable|date_format:H:i',
-            'break_end_time' => 'nullable|date_format:H:i',
-            'break2_start_time' => 'nullable|date_format:H:i',
-            'break2_end_time' => 'nullable|date_format:H:i',
-            'status' => 'required|in:working,break,completed,not_working',
-        ]);
+        // 既に保留中の申請があるかチェック
+        $existingRequest = $user->attendanceRequests()
+            ->where('attendance_id', $id)
+            ->where('status', AttendanceRequest::STATUS_PENDING)
+            ->first();
 
-        $updateData = [
-            'status' => $request->status,
+        if ($existingRequest) {
+            return back()->withErrors(['general' => '既に保留中の申請があります。']);
+        }
+
+        $requestData = [
+            'user_id' => $user->id,
+            'attendance_id' => $id,
+            'target_date' => $attendance->created_at->format('Y-m-d'),
+            'request_type' => AttendanceRequest::TYPE_UPDATE,
+            'status' => AttendanceRequest::STATUS_PENDING,
+            'status_note' => $request->status,
+            'notes' => $request->notes,
         ];
 
         // 時間データの処理
         if ($request->clock_in_time) {
-            $updateData['clock_in_time'] = $attendance->created_at->format('Y-m-d') . ' ' . $request->clock_in_time;
+            $requestData['clock_in_time'] = $request->clock_in_time . ':00';
         }
         if ($request->clock_out_time) {
-            $updateData['clock_out_time'] = $attendance->created_at->format('Y-m-d') . ' ' . $request->clock_out_time;
+            $requestData['clock_out_time'] = $request->clock_out_time . ':00';
         }
         if ($request->break_start_time) {
-            $updateData['break_start_time'] = $attendance->created_at->format('Y-m-d') . ' ' . $request->break_start_time;
+            $requestData['break_start_time'] = $request->break_start_time . ':00';
         }
         if ($request->break_end_time) {
-            $updateData['break_end_time'] = $attendance->created_at->format('Y-m-d') . ' ' . $request->break_end_time;
+            $requestData['break_end_time'] = $request->break_end_time . ':00';
         }
         if ($request->break2_start_time) {
-            $updateData['break2_start_time'] = $attendance->created_at->format('Y-m-d') . ' ' . $request->break2_start_time;
+            $requestData['break2_start_time'] = $request->break2_start_time . ':00';
         }
         if ($request->break2_end_time) {
-            $updateData['break2_end_time'] = $attendance->created_at->format('Y-m-d') . ' ' . $request->break2_end_time;
+            $requestData['break2_end_time'] = $request->break2_end_time . ':00';
         }
 
-        $attendance->update($updateData);
+        AttendanceRequest::create($requestData);
 
-        return redirect()->route('user.attendance.list', ['id' => $id])
-            ->with('success', '勤怠情報を更新しました。');
+        return redirect()->route('user.attendance.list');
+    }
+
+    /**
+     * 勤怠新規作成申請を作成
+     */
+    public function attendanceStore(AttendanceStoreRequest $request)
+    {
+        $user = Auth::user();
+
+        // 指定された日付で既に勤怠記録が存在するかチェック
+        $existingAttendance = $user->attendances()
+            ->whereDate('created_at', $request->date)
+            ->first();
+
+        if ($existingAttendance) {
+            return back()->withErrors(['date' => '指定された日付には既に勤怠記録が存在します。']);
+        }
+
+        // 既に保留中の申請があるかチェック
+        $existingRequest = $user->attendanceRequests()
+            ->where('target_date', $request->date)
+            ->where('status', AttendanceRequest::STATUS_PENDING)
+            ->first();
+
+        if ($existingRequest) {
+            return back()->withErrors(['date' => '既に保留中の申請があります。']);
+        }
+
+        $requestData = [
+            'user_id' => $user->id,
+            'attendance_id' => null,
+            'target_date' => $request->date,
+            'request_type' => AttendanceRequest::TYPE_CREATE,
+            'status' => AttendanceRequest::STATUS_PENDING,
+            'status_note' => $request->status,
+            'notes' => $request->notes,
+        ];
+
+        // 時間データの処理
+        if ($request->clock_in_time) {
+            $requestData['clock_in_time'] = $request->clock_in_time . ':00';
+        }
+        if ($request->clock_out_time) {
+            $requestData['clock_out_time'] = $request->clock_out_time . ':00';
+        }
+        if ($request->break_start_time) {
+            $requestData['break_start_time'] = $request->break_start_time . ':00';
+        }
+        if ($request->break_end_time) {
+            $requestData['break_end_time'] = $request->break_end_time . ':00';
+        }
+        if ($request->break2_start_time) {
+            $requestData['break2_start_time'] = $request->break2_start_time . ':00';
+        }
+        if ($request->break2_end_time) {
+            $requestData['break2_end_time'] = $request->break2_end_time . ':00';
+        }
+
+        AttendanceRequest::create($requestData);
+
+        return redirect()->route('user.attendance.list');
+    }
+
+    /**
+     * 申請一覧を表示
+     */
+    public function attendanceRequests(Request $request)
+    {
+        $user = Auth::user();
+        $requests = $user->attendanceRequests()
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return view('attendance.requests', compact('requests'));
     }
 }

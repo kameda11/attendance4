@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Admin;
 use App\Models\Attendance;
 use App\Models\User;
+use App\Models\AttendanceRequest;
 use Carbon\Carbon;
 
 class AdminController extends Controller
@@ -40,7 +41,7 @@ class AdminController extends Controller
             $request->session()->put('admin_email', $adminEmail);
             $request->session()->regenerate();
 
-            return redirect()->intended(route('admin.attendances'));
+            return redirect()->route('admin.attendances');
         }
 
         return back()->withErrors([
@@ -297,5 +298,132 @@ class AdminController extends Controller
         Attendance::create($createData);
 
         return redirect()->route('admin.attendances')->with('success', '勤怠情報を作成しました。');
+    }
+
+    /**
+     * 申請一覧を表示
+     */
+    public function attendanceRequests(Request $request)
+    {
+        $requests = AttendanceRequest::with(['user', 'attendance', 'approvedBy'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(20);
+
+        return view('admin.attendance-requests', compact('requests'));
+    }
+
+    /**
+     * 申請詳細を表示
+     */
+    public function attendanceRequestDetail($id)
+    {
+        $request = AttendanceRequest::with(['user', 'attendance', 'approvedBy'])
+            ->findOrFail($id);
+
+        return view('admin.attendance-request-detail', compact('request'));
+    }
+
+    /**
+     * 申請を承認
+     */
+    public function approveRequest(Request $request, $id)
+    {
+        $attendanceRequest = AttendanceRequest::findOrFail($id);
+
+        if ($attendanceRequest->status !== AttendanceRequest::STATUS_PENDING) {
+            return back()->withErrors(['general' => 'この申請は既に処理済みです。']);
+        }
+
+        // 承認処理
+        $attendanceRequest->update([
+            'status' => AttendanceRequest::STATUS_APPROVED,
+            'approved_at' => now(),
+        ]);
+
+        // 勤怠データを更新または作成
+        if ($attendanceRequest->request_type === AttendanceRequest::TYPE_UPDATE) {
+            // 修正申請の場合
+            $attendance = $attendanceRequest->attendance;
+            $updateData = [];
+
+            if ($attendanceRequest->clock_in_time) {
+                $updateData['clock_in_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->clock_in_time;
+            }
+            if ($attendanceRequest->clock_out_time) {
+                $updateData['clock_out_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->clock_out_time;
+            }
+            if ($attendanceRequest->break_start_time) {
+                $updateData['break_start_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->break_start_time;
+            }
+            if ($attendanceRequest->break_end_time) {
+                $updateData['break_end_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->break_end_time;
+            }
+            if ($attendanceRequest->break2_start_time) {
+                $updateData['break2_start_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->break2_start_time;
+            }
+            if ($attendanceRequest->break2_end_time) {
+                $updateData['break2_end_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->break2_end_time;
+            }
+            if ($attendanceRequest->status_note) {
+                $updateData['status'] = $attendanceRequest->status_note;
+            }
+
+            $attendance->update($updateData);
+        } else {
+            // 新規作成申請の場合
+            $createData = [
+                'user_id' => $attendanceRequest->user_id,
+                'status' => $attendanceRequest->status_note,
+            ];
+
+            if ($attendanceRequest->clock_in_time) {
+                $createData['clock_in_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->clock_in_time;
+            }
+            if ($attendanceRequest->clock_out_time) {
+                $createData['clock_out_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->clock_out_time;
+            }
+            if ($attendanceRequest->break_start_time) {
+                $createData['break_start_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->break_start_time;
+            }
+            if ($attendanceRequest->break_end_time) {
+                $createData['break_end_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->break_end_time;
+            }
+            if ($attendanceRequest->break2_start_time) {
+                $createData['break2_start_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->break2_start_time;
+            }
+            if ($attendanceRequest->break2_end_time) {
+                $createData['break2_end_time'] = $attendanceRequest->target_date . ' ' . $attendanceRequest->break2_end_time;
+            }
+
+            Attendance::create($createData);
+        }
+
+        return redirect()->route('admin.attendance.requests')
+            ->with('success', '申請を承認しました。');
+    }
+
+    /**
+     * 申請を却下
+     */
+    public function rejectRequest(Request $request, $id)
+    {
+        $request->validate([
+            'rejection_reason' => 'required|string|max:500',
+        ]);
+
+        $attendanceRequest = AttendanceRequest::findOrFail($id);
+
+        if ($attendanceRequest->status !== AttendanceRequest::STATUS_PENDING) {
+            return back()->withErrors(['general' => 'この申請は既に処理済みです。']);
+        }
+
+        $attendanceRequest->update([
+            'status' => AttendanceRequest::STATUS_REJECTED,
+            'approved_at' => now(),
+            'rejection_reason' => $request->rejection_reason,
+        ]);
+
+        return redirect()->route('admin.attendance.requests')
+            ->with('success', '申請を却下しました。');
     }
 }
