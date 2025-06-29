@@ -32,6 +32,7 @@ Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.lo
 
 // 管理者認証が必要なルート
 Route::middleware(['admin.auth'])->group(function () {
+    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
     Route::get('/admin/attendances', [AdminController::class, 'attendances'])->name('admin.attendances');
     Route::get('/admin/attendance/detail/{id}', [AdminController::class, 'attendanceDetail'])->name('admin.attendance.detail');
     Route::put('/admin/attendance/update/{id}', [AdminController::class, 'attendanceUpdate'])->name('admin.attendance.update');
