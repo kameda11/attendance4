@@ -26,20 +26,13 @@
 }
 
 .back-button {
-    background: #667eea;
-    color: white;
+    color: #737373;
     text-decoration: none;
     padding: 10px 20px;
     border-radius: 6px;
     font-size: 14px;
-    transition: all 0.3s ease;
 }
 
-.back-button:hover {
-    background: #5a6fd8;
-}
-
-/* 矢印スタイル */
 .arrow-left,
 .arrow-right {
     width: 20px;
@@ -87,10 +80,6 @@ td {
     color: #737373;
 }
 
-tr:hover {
-    background-color: #f8f9fa;
-}
-
 .action-button {
     display: inline-block;
     padding: 6px 12px;
@@ -98,17 +87,13 @@ tr:hover {
     text-decoration: none;
     font-size: 0.9em;
     font-weight: bold;
-    transition: all 0.3s ease;
 }
 
 .action-button.detail {
-    background: #007bff;
+    background: #737373;
     color: white;
 }
 
-.action-button.detail:hover {
-    background: #0056b3;
-}
 
 .status-badge {
     display: inline-block;
