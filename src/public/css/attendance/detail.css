@@ -149,3 +149,18 @@ tr:last-child td {
     border: none;
     border-radius: 5px;
 }
+
+.attendance-notice {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    color: #856404;
+}
+
+.attendance-notice p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+}

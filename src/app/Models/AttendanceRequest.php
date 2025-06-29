@@ -17,24 +17,13 @@ class AttendanceRequest extends Model
         'status',
         'clock_in_time',
         'clock_out_time',
-        'break_start_time',
-        'break_end_time',
-        'break2_start_time',
-        'break2_end_time',
         'notes',
-        'approved_at',
-        'rejection_reason',
     ];
 
     protected $casts = [
         'target_date' => 'date',
         'clock_in_time' => 'datetime',
         'clock_out_time' => 'datetime',
-        'break_start_time' => 'datetime',
-        'break_end_time' => 'datetime',
-        'break2_start_time' => 'datetime',
-        'break2_end_time' => 'datetime',
-        'approved_at' => 'datetime',
     ];
 
     public function user()

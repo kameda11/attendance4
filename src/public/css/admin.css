@@ -12,10 +12,6 @@
     color: #ffffff;
 }
 
-.admin-header .header-nav__link:hover {
-    color: #007bff;
-}
-
 .admin-badge {
     background-color: #dc3545;
     color: white;

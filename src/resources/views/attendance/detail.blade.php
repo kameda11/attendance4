@@ -7,6 +7,12 @@
         <h1>勤怠詳細</h1>
     </div>
 
+    @if($attendance)
+    <div class="attendance-notice">
+        <p>※ 修正内容は承認申請として送信されます。承認をお待ちください。</p>
+    </div>
+    @endif
+
     <form action="{{ $attendance ? route('user.attendance.update', ['id' => $attendance->id]) : route('user.attendance.store') }}" method="POST">
         @csrf
         @if($attendance)
@@ -51,29 +57,55 @@
                     <tr>
                         <th>休憩</th>
                         <td>
+                            @if($attendance && $attendance->breakTimes->count() > 0)
+                            @php $firstBreak = $attendance->breakTimes->first(); @endphp
+                            <div class="break-item">
+                                <span class="break-time">
+                                    {{ $firstBreak->start_time ? $firstBreak->start_time->format('H:i') : '' }} ~
+                                    {{ $firstBreak->end_time ? $firstBreak->end_time->format('H:i') : '' }}
+                                </span>
+                                @if($firstBreak->notes)
+                                <span class="break-notes">({{ $firstBreak->notes }})</span>
+                                @endif
+                            </div>
+                            @else
                             <div class="time-inputs">
                                 <div class="time-input">
-                                    <input type="text" name="break_start_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" value="{{ $attendance && $attendance->break_start_time ? $attendance->break_start_time->format('H:i') : '' }}" inputmode="numeric" autocomplete="off">
+                                    <input type="text" name="break1_start_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" inputmode="numeric" autocomplete="off">
                                 </div>
                                 <label>~</label>
                                 <div class="time-input">
-                                    <input type="text" name="break_end_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" value="{{ $attendance && $attendance->break_end_time ? $attendance->break_end_time->format('H:i') : '' }}" inputmode="numeric" autocomplete="off">
+                                    <input type="text" name="break1_end_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" inputmode="numeric" autocomplete="off">
                                 </div>
                             </div>
+                            @endif
                         </td>
                     </tr>
                     <tr>
                         <th>休憩2</th>
                         <td>
+                            @if($attendance && $attendance->breakTimes->count() > 1)
+                            @php $secondBreak = $attendance->breakTimes->get(1); @endphp
+                            <div class="break-item">
+                                <span class="break-time">
+                                    {{ $secondBreak->start_time ? $secondBreak->start_time->format('H:i') : '' }} ~
+                                    {{ $secondBreak->end_time ? $secondBreak->end_time->format('H:i') : '' }}
+                                </span>
+                                @if($secondBreak->notes)
+                                <span class="break-notes">({{ $secondBreak->notes }})</span>
+                                @endif
+                            </div>
+                            @else
                             <div class="time-inputs">
                                 <div class="time-input">
-                                    <input type="text" name="break2_start_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" value="{{ $attendance && $attendance->break2_start_time ? $attendance->break2_start_time->format('H:i') : '' }}" inputmode="numeric" autocomplete="off">
+                                    <input type="text" name="break2_start_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" inputmode="numeric" autocomplete="off">
                                 </div>
                                 <label>~</label>
                                 <div class="time-input">
-                                    <input type="text" name="break2_end_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" value="{{ $attendance && $attendance->break2_end_time ? $attendance->break2_end_time->format('H:i') : '' }}" inputmode="numeric" autocomplete="off">
+                                    <input type="text" name="break2_end_time" pattern="[0-9]{1,2}:[0-9]{2}" maxlength="5" inputmode="numeric" autocomplete="off">
                                 </div>
                             </div>
+                            @endif
                         </td>
                     </tr>
                     <tr>

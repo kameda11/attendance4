@@ -59,8 +59,8 @@
 }
 
 .arrow-left {
-        transform: rotate(0deg);
-    }
+    transform: rotate(0deg);
+}
 
 .arrow-right {
     transform: rotate(180deg);

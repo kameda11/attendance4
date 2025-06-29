@@ -61,4 +61,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(AttendanceRequest::class);
     }
+
+    /**
+     * Get the break requests for the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function breakRequests()
+    {
+        return $this->hasMany(BreakRequest::class);
+    }
 }
