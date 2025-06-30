@@ -28,7 +28,7 @@
                         </td>
                         <td class="user-email">{{ $user->email }}</td>
                         <td>
-                            <a href="{{ route('admin.attendance.detail', ['id' => 0, 'user_id' => $user->id, 'date' => now()->format('Y-m-d')]) }}" class="action-button detail">詳細</a>
+                            <a href="{{ route('admin.user.attendance.list', ['userId' => $user->id]) }}" class="action-button detail">詳細</a>
                         </td>
                     </tr>
                     @empty

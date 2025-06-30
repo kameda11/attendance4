@@ -54,7 +54,7 @@
                         @if($date['attendance'])
                         <a href="{{ route('user.attendance.detail', ['id' => $date['attendance']->id]) }}">詳細</a>
                         @else
-                        <a href="{{ route('user.attendance.detail', ['id' => 0]) }}">詳細</a>
+                        <a href="{{ route('user.attendance.detail', ['id' => 0, 'date' => $date['date']]) }}">詳細</a>
                         @endif
                     </td>
                 </tr>

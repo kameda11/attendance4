@@ -591,6 +591,73 @@ class UserController extends Controller
     }
 
     /**
+     * 申請一覧を表示（stamp_correction_request用）
+     */
+    public function stampCorrectionRequests(Request $request)
+    {
+        $user = Auth::user();
+        $status = $request->get('status', 'pending');
+
+        // 承認待ちと承認済みの件数を取得（勤怠申請 + 休憩申請）
+        $pendingCount = $user->attendanceRequests()->where('status', 'pending')->count() +
+            $user->breakRequests()->where('status', 'pending')->count();
+        $approvedCount = $user->attendanceRequests()->where('status', 'approved')->count() +
+            $user->breakRequests()->where('status', 'approved')->count();
+
+        // 勤怠申請を取得
+        $attendanceRequests = $user->attendanceRequests()
+            ->where('status', $status)
+            ->get()
+            ->map(function ($request) {
+                $request->request_type = 'attendance';
+                // その日付の勤怠IDを取得
+                $attendance = Attendance::where('user_id', $request->user_id)
+                    ->whereDate('created_at', $request->target_date)
+                    ->first();
+                $request->attendance_id = $attendance ? $attendance->id : 0;
+                return $request;
+            });
+
+        // 休憩申請を取得
+        $breakRequests = $user->breakRequests()
+            ->where('status', $status)
+            ->get()
+            ->map(function ($request) {
+                $request->request_type = 'break';
+                // その日付の勤怠IDを取得
+                $attendance = Attendance::where('user_id', $request->user_id)
+                    ->whereDate('created_at', $request->target_date)
+                    ->first();
+                $request->attendance_id = $attendance ? $attendance->id : 0;
+                return $request;
+            });
+
+        // 両方の申請を結合して日時順にソート
+        $allRequests = $attendanceRequests->concat($breakRequests)
+            ->sortByDesc('created_at');
+
+        // ページネーション用に配列を分割
+        $perPage = 20;
+        $currentPage = $request->get('page', 1);
+        $offset = ($currentPage - 1) * $perPage;
+        $requests = $allRequests->slice($offset, $perPage);
+
+        // 手動でページネーション情報を作成
+        $paginator = new \Illuminate\Pagination\LengthAwarePaginator(
+            $requests,
+            $allRequests->count(),
+            $perPage,
+            $currentPage,
+            [
+                'path' => $request->url(),
+                'pageName' => 'page',
+            ]
+        );
+
+        return view('stamp_correction_request.list', compact('paginator', 'status', 'pendingCount', 'approvedCount'));
+    }
+
+    /**
      * 休憩申請一覧を表示
      */
     public function breakRequests(Request $request)

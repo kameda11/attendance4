@@ -58,7 +58,7 @@
                         <td class="request-date">{{ $request->created_at->format('Y年m月d日 H:i') }}</td>
                         <td>
                             @if($request->request_type === 'attendance')
-                            <a href="{{ route('admin.attendance.request.detail', ['id' => $request->id]) }}" class="action-button detail">詳細</a>
+                            <a href="{{ route('admin.attendance.request.approval', ['id' => $request->id]) }}" class="action-button detail">詳細</a>
                             @elseif($request->request_type === 'break')
                             <a href="{{ route('admin.break.request.detail', ['id' => $request->id]) }}" class="action-button detail">詳細</a>
                             @else

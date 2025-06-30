@@ -41,8 +41,11 @@ Route::middleware(['admin.auth'])->group(function () {
     // 申請関連
     Route::get('/admin/attendance/requests', [AdminController::class, 'attendanceRequests'])->name('admin.attendance.requests');
     Route::get('/admin/attendance/request/detail/{id}', [AdminController::class, 'attendanceRequestDetail'])->name('admin.attendance.request.detail');
+    Route::get('/admin/attendance/request/approval/{id}', [AdminController::class, 'showApprovalPage'])->name('admin.attendance.request.approval');
     Route::post('/admin/attendance/request/approve/{id}', [AdminController::class, 'approveRequest'])->name('admin.attendance.request.approve');
-    Route::post('/admin/attendance/request/reject/{id}', [AdminController::class, 'rejectRequest'])->name('admin.attendance.request.reject');
+
+    // スタッフ別勤怠一覧
+    Route::get('/admin/user/{userId}/attendance/list', [AdminController::class, 'userAttendanceList'])->name('admin.user.attendance.list');
 });
 
 // メール認証関連のルート
@@ -77,4 +80,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // 申請関連
     Route::get('/attendance/requests', [UserController::class, 'attendanceRequests'])->name('user.attendance.requests');
+    Route::get('/stamp_correction_request/list', [UserController::class, 'stampCorrectionRequests'])->name('user.stamp.correction.requests');
 });

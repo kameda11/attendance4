@@ -356,7 +356,7 @@ class AdminController extends Controller
      */
     public function attendanceRequests(Request $request)
     {
-        $requests = AttendanceRequest::with(['user', 'attendance', 'approvedBy'])
+        $requests = AttendanceRequest::with(['user', 'attendance'])
             ->orderBy('created_at', 'desc')
             ->paginate(20);
 
@@ -368,10 +368,21 @@ class AdminController extends Controller
      */
     public function attendanceRequestDetail($id)
     {
-        $request = AttendanceRequest::with(['user', 'attendance', 'approvedBy'])
+        $request = AttendanceRequest::with(['user', 'attendance'])
             ->findOrFail($id);
 
         return view('admin.attendance-request-detail', compact('request'));
+    }
+
+    /**
+     * 修正申請承認ページを表示
+     */
+    public function showApprovalPage($id)
+    {
+        $request = AttendanceRequest::with(['user', 'attendance.breakTimes'])
+            ->findOrFail($id);
+
+        return view('admin.approval', compact('request'));
     }
 
     /**
@@ -422,30 +433,6 @@ class AdminController extends Controller
 
         return redirect()->route('admin.attendance.requests')
             ->with('success', '申請を承認しました。');
-    }
-
-    /**
-     * 申請を却下
-     */
-    public function rejectRequest(Request $request, $id)
-    {
-        $request->validate([
-            'rejection_reason' => 'required|string|max:500',
-        ]);
-
-        $attendanceRequest = AttendanceRequest::findOrFail($id);
-
-        if ($attendanceRequest->status !== 'pending') {
-            return back()->withErrors(['general' => 'この申請は既に処理済みです。']);
-        }
-
-        $attendanceRequest->update([
-            'status' => 'rejected',
-            'rejection_reason' => $request->rejection_reason,
-        ]);
-
-        return redirect()->route('admin.attendance.requests')
-            ->with('success', '申請を却下しました。');
     }
 
     /**
@@ -549,5 +536,93 @@ class AdminController extends Controller
 
         return redirect()->route('admin.break.requests')
             ->with('success', '休憩申請を却下しました。');
+    }
+
+    /**
+     * スタッフ別勤怠一覧を表示
+     */
+    public function userAttendanceList(Request $request, $userId)
+    {
+        $user = User::findOrFail($userId);
+
+        // 年月パラメータを取得（デフォルトは現在の年月）
+        $year = $request->get('year', now()->year);
+        $month = $request->get('month', now()->month);
+        $currentMonth = Carbon::create($year, $month, 1);
+
+        // 前月・翌月を計算
+        $prevMonth = $currentMonth->copy()->subMonth();
+        $nextMonth = $currentMonth->copy()->addMonth();
+
+        // その月の勤怠データを取得
+        $attendances = Attendance::with(['breakTimes'])
+            ->where('user_id', $userId)
+            ->whereYear('created_at', $year)
+            ->whereMonth('created_at', $month)
+            ->get()
+            ->keyBy(function ($attendance) {
+                return $attendance->created_at->format('Y-m-d');
+            });
+
+        // カレンダー配列を作成
+        $calendar = [];
+        $daysInMonth = $currentMonth->daysInMonth;
+
+        for ($day = 1; $day <= $daysInMonth; $day++) {
+            $date = Carbon::create($year, $month, $day);
+            $dateKey = $date->format('Y-m-d');
+            $attendance = $attendances->get($dateKey);
+
+            // 休憩時間を計算
+            $breakTime = '';
+            if ($attendance && $attendance->breakTimes->isNotEmpty()) {
+                $totalBreakMinutes = 0;
+                foreach ($attendance->breakTimes as $break) {
+                    if ($break->start_time && $break->end_time) {
+                        $totalBreakMinutes += $break->start_time->diffInMinutes($break->end_time);
+                    }
+                }
+                $hours = floor($totalBreakMinutes / 60);
+                $remainingMinutes = $totalBreakMinutes % 60;
+                $breakTime = sprintf('%02d:%02d', $hours, $remainingMinutes);
+            }
+
+            // 勤務時間を計算
+            $workTime = '';
+            if ($attendance && $attendance->clock_in_time && $attendance->clock_out_time) {
+                $clockIn = Carbon::parse($attendance->clock_in_time);
+                $clockOut = Carbon::parse($attendance->clock_out_time);
+                $totalMinutes = $clockOut->diffInMinutes($clockIn);
+
+                // 休憩時間を差し引く
+                if ($attendance->breakTimes->isNotEmpty()) {
+                    $totalBreakMinutes = 0;
+                    foreach ($attendance->breakTimes as $break) {
+                        if ($break->start_time && $break->end_time) {
+                            $totalBreakMinutes += $break->start_time->diffInMinutes($break->end_time);
+                        }
+                    }
+                    $totalMinutes -= $totalBreakMinutes;
+                }
+
+                $hours = floor($totalMinutes / 60);
+                $minutes = $totalMinutes % 60;
+                $workTime = sprintf('%02d:%02d', $hours, $minutes);
+            }
+
+            $calendar[] = [
+                'day' => $day,
+                'weekday' => $date->format('D'),
+                'date' => $date->format('Y-m-d'),
+                'attendance' => $attendance,
+                'attendance_id' => $attendance ? $attendance->id : 0,
+                'breakTime' => $breakTime,
+                'workTime' => $workTime,
+                'isToday' => $date->isToday(),
+                'isWeekend' => $date->isWeekend(),
+            ];
+        }
+
+        return view('admin.list', compact('user', 'calendar', 'currentMonth', 'prevMonth', 'nextMonth'));
     }
 }
