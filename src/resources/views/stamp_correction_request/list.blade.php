@@ -25,7 +25,7 @@
                 <thead>
                     <tr>
                         <th>状態</th>
-                        <th>申請タイプ</th>
+                        <th>名前</th>
                         <th>対象日時</th>
                         <th>申請理由</th>
                         <th>申請日時</th>
@@ -46,15 +46,7 @@
                                 @endif
                             </span>
                         </td>
-                        <td class="request-type">
-                            @if($request->request_type === 'attendance')
-                            勤怠申請
-                            @elseif($request->request_type === 'break')
-                            休憩申請
-                            @else
-                            {{ $request->request_type }}
-                            @endif
-                        </td>
+                        <td class="user-name">{{ $request->user ? $request->user->name : '不明' }}</td>
                         <td class="target-date">{{ $request->target_date->format('Y年m月d日') }}</td>
                         <td class="request-reason">
                             @if($request->notes)
@@ -66,9 +58,9 @@
                         <td class="request-date">{{ $request->created_at->format('Y年m月d日 H:i') }}</td>
                         <td>
                             @if($request->request_type === 'attendance')
-                            <a href="{{ route('user.attendance.detail', ['id' => $request->attendance_id]) }}" class="action-button detail">詳細</a>
+                            <a href="{{ route('admin.attendance.detail', ['id' => $request->attendance_id, 'user_id' => $request->user_id, 'date' => $request->target_date->format('Y-m-d')]) }}" class="action-button detail">詳細</a>
                             @elseif($request->request_type === 'break')
-                            <a href="{{ route('user.attendance.detail', ['id' => $request->attendance_id]) }}" class="action-button detail">詳細</a>
+                            <a href="{{ route('admin.attendance.detail', ['id' => $request->attendance_id, 'user_id' => $request->user_id, 'date' => $request->target_date->format('Y-m-d')]) }}" class="action-button detail">詳細</a>
                             @else
                             <span class="action-button detail disabled">詳細</span>
                             @endif

@@ -1,4 +1,4 @@
-/* 管理者用スタイル */
+/* 管理者専用スタイル */
 .admin-body {
     background-color: #f8f9fa;
 }
@@ -8,18 +8,27 @@
     border-bottom: 3px solid #007bff;
 }
 
+.admin-header .header__logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-badge {
+    background-color: #007bff;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
 .admin-header .header-nav__link {
     color: #ffffff;
 }
 
-.admin-badge {
-    background-color: #dc3545;
-    color: white;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    margin-left: 10px;
-    font-weight: bold;
+.admin-header .header-nav__link:hover {
+    color: #007bff;
 }
 
 .admin-main {
@@ -67,4 +76,23 @@
 
 .admin-btn-success:hover {
     background-color: #218838;
+}
+
+/* 管理者ログイン専用スタイル */
+.admin-login-body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.admin-login-header {
+    background-color: #343a40;
+    border-bottom: 3px solid #007bff;
+}
+
+.admin-login-main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 80px);
+    padding: 20px;
 }

@@ -606,6 +606,7 @@ class UserController extends Controller
 
         // 勤怠申請を取得
         $attendanceRequests = $user->attendanceRequests()
+            ->with('user')
             ->where('status', $status)
             ->get()
             ->map(function ($request) {
@@ -620,6 +621,7 @@ class UserController extends Controller
 
         // 休憩申請を取得
         $breakRequests = $user->breakRequests()
+            ->with('user')
             ->where('status', $status)
             ->get()
             ->map(function ($request) {
